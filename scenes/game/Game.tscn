@@ -1,0 +1,84 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://scenes/game/Tiles/tiles.tres" type="MeshLibrary" id=1]
+[ext_resource path="res://scenes/game/StaticBody.gd" type="Script" id=2]
+[ext_resource path="res://scenes/game/Person.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/game/Camera.gd" type="Script" id=4]
+
+[sub_resource type="ProceduralSky" id=1]
+
+[sub_resource type="Environment" id=2]
+background_mode = 3
+background_sky = SubResource( 1 )
+background_color = Color( 0.0901961, 0.0823529, 0.0823529, 1 )
+fog_depth_enabled = false
+fog_depth_begin = 40.0
+fog_depth_end = 300.0
+glow_enabled = true
+glow_strength = 1.16
+glow_bloom = 0.1
+glow_blend_mode = 0
+glow_hdr_threshold = 0.55
+glow_hdr_luminance_cap = 1.0
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.380392, 0.439216, 0.529412, 1 )
+metallic = 0.75
+
+[sub_resource type="QuadMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 20, 20 )
+
+[sub_resource type="PhysicsMaterial" id=5]
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 4.55073, 1, 5.20027 )
+
+[node name="Game" type="Spatial"]
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource( 1 )
+cell_size = Vector3( 1.1, 0.2, 1.1 )
+data = {
+"cells": PoolIntArray( 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, -1073741824, 2, 1, -1610612736, 3, 1, 536870912, 0, 2, 0, 1, 2, 0, 2, 2, 0, 3, 2, -1610612736, 0, 3, 0, 1, 3, 0, 2, 3, 0, 3, 3, 0, 65535, 3, 0, 0, 4, 0, 1, 4, 0, 2, 4, 0 )
+}
+__meta__ = {
+"_editor_clip_": 0,
+"_editor_floor_": Vector3( 0, 1, 0 )
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 2 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -0.687873, 0.42346, -0.589502, 0, 0.812175, 0.583414, 0.725831, 0.401315, -0.558674, 1.16982, 2, 0.484376 )
+h_offset = 2.0
+v_offset = 3.0
+doppler_tracking = 1
+projection = 1
+current = true
+size = 10.0
+near = 0.01
+far = 8192.0
+script = ExtResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Camera"]
+transform = Transform( 1, 2.08616e-07, -2.98023e-08, 0, 1, 1.49012e-08, 0, -4.47035e-08, 1, 1.43051e-06, -1.19209e-06, -9.12695 )
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="Person" parent="." instance=ExtResource( 3 )]
+
+[node name="SpotLight" type="SpotLight" parent="."]
+transform = Transform( 0.114276, -0.761908, 0.637524, 0.119311, 0.647609, 0.752574, -0.986259, -0.00993715, 0.16491, 8.13155, 6.95174, 4.10829 )
+light_specular = 1.0
+shadow_enabled = true
+spot_range = 11.0973
+
+[node name="StaticBody" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.23076, -0.828574, 3.64155 )
+physics_material_override = SubResource( 5 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+shape = SubResource( 6 )
