@@ -3,18 +3,25 @@ extends Spatial
 
 export (NodePath) var people_path := "People"
 export (NodePath) var enemies_path := "Enemies"
+export (NodePath) var boats_path := "Boats"
+export (NodePath) var boat_point_path := "BoatPoint"
 export (NodePath) var grid_path := "GridMap"
+export (PackedScene) var boat_scene = null
 export (int) var max_moves := 3
 export (int) var lowest_tile_index := 1
 export (int) var medium_tile_index := 2
+export (int) var turns_till_boat := 3
 
 onready var _people := get_node(people_path)
 onready var _enemies := get_node(enemies_path)
 onready var _grid := get_node(grid_path)
+onready var _boats := get_node(boats_path)
+onready var _boat_point := get_node(boat_point_path)
 
 var _selected_person: Spatial = null
 var _state = GameStates.AWAITING_PLAYER
 var _moves_done := 0
+var _turn := 1
 
 
 
@@ -59,7 +66,8 @@ func _do_move(pos):
 			_moves_done = 0
 			_state = GameStates.ENEMY_TURN
 			_enemy_turn()
-
+			_boat_turn()
+			_turn += 1
 
 func _drop_tile():
 	var used = _grid.get_used_cells()
@@ -116,9 +124,58 @@ func _enemy_turn():
 	_state = GameStates.AWAITING_PLAYER
 
 
+func _boat_turn():
+	var boat = null
+	if _boats.get_children().size() > 0:
+		boat = _boats.get_children()[0]
+
+	if fmod(_turn, turns_till_boat) == 0 and boat == null:
+		print("spawning boat")
+		var new_boat = boat_scene.instance()
+		new_boat.transform.origin = _boat_point.transform.origin
+		_boats.add_child(new_boat)
+	elif boat != null:
+		print("dealing with boat")
+		if boat.is_full():
+			# only care about getting back to exit on z axis
+			var exit_pos = floor(_boat_point.transform.origin.z)
+			var distance = exit_pos - boat.get_grid_pos().y
+			if distance == 0:
+				print("boat got out")
+				boat.queue_free()
+			else:
+				var movement = clamp(distance, 0, boat.move_speed)
+				var offset = Vector2(0, movement)
+				boat.move_by(offset)
+		else:
+			var nearest_cell = null
+			var nearest_x = 0
+			var nearest_z = 0
+			var current_pos = boat.get_grid_pos()
+			var used_cells = _grid.get_used_cells()
+			if used_cells.size() > 0:
+				nearest_cell = used_cells[0]
+				nearest_x = nearest_cell.x - current_pos.x
+				nearest_z = nearest_cell.z - current_pos.y
+
+				for cell in _grid.get_used_cells():
+					var x_diff = cell.x - current_pos.x
+					var z_diff = cell.z - current_pos.y
+					if x_diff < nearest_x or (x_diff == nearest_x and z_diff < nearest_z):
+						nearest_cell = cell
+						nearest_x = x_diff
+						nearest_z = z_diff
+
+				var movement_x = clamp(nearest_x, 0, boat.move_speed)
+				var movement_left = boat.move_speed - movement_x
+				var movement_z = clamp(nearest_z - 1, 0, movement_left) # subtract one as we don't want to go onto tile
+				boat.move_by(Vector2(movement_x, movement_z))
+
+
 func _on_grid_clicked(pos):
 	if _state == GameStates.AWAITING_PLAYER:
 		_do_move(pos)
+
 
 func _on_grid_position(pos):
 	pass
