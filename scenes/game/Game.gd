@@ -98,8 +98,10 @@ func _end_player_move():
 	if _moves_done == max_moves:
 		_moves_done = 0
 		_state = GameStates.ENEMY_TURN
-		_enemy_turn()
+		_drop_tile()
+		_do_enemy_move()
 		_boat_turn()
+		_state = GameStates.AWAITING_PLAYER
 		_turn += 1
 
 	_check_state()
@@ -155,12 +157,6 @@ func _do_enemy_move():
 			print("Killing person:" , attacking_person)
 			attacking_person.queue_free()
 		enemy.move_by(offset)
-
-
-func _enemy_turn():
-	_drop_tile()
-	_do_enemy_move()
-	_state = GameStates.AWAITING_PLAYER
 
 
 func _boat_turn():
