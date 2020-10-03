@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://scenes/game/Enemy.gd" type="Script" id=1]
+[ext_resource path="res://scenes/game/enemies/Enemy.gd" type="Script" id=1]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.870588, 0.403922, 0.886275, 1 )
