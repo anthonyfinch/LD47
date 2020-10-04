@@ -53,7 +53,7 @@ level = ExtResource( 6 )
 mesh_library = ExtResource( 4 )
 cell_size = Vector3( 1, 0.2, 1 )
 data = {
-"cells": PoolIntArray( 3, 4, 1073741825 )
+"cells": PoolIntArray( 3, 4, 1 )
 }
 __meta__ = {
 "_editor_clip_": 0,
