@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://ui/Oxanium-Medium.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://ui/Button.tres" type="Theme" id=2]
+[ext_resource path="res://scenes/End.gd" type="Script" id=3]
+[ext_resource path="res://scenes/levels/Level1.tscn" type="PackedScene" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+font_data = ExtResource( 1 )
+
+[node name="End" type="Node2D"]
+script = ExtResource( 3 )
+level = ExtResource( 4 )
+
+[node name="Label" type="Label" parent="."]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 236.865
+margin_top = 175.185
+margin_right = 783.865
+margin_bottom = 316.185
+custom_fonts/font = SubResource( 1 )
+text = "Hey, thanks for playing my game. 
+I would love to know what you think!
+
+@tigerchops"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+margin_left = 435.933
+margin_top = 364.117
+margin_right = 594.933
+margin_bottom = 401.117
+theme = ExtResource( 2 )
+text = "Play Again"
+__meta__ = {
+"_edit_use_anchors_": false
+}
