@@ -18,3 +18,5 @@ script = ExtResource( 1 )
 [node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = SubResource( 2 )
 material/0 = null
+
+[node name="Tween" type="Tween" parent="."]

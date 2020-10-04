@@ -31,6 +31,7 @@ var _moves_done := 0
 var _turn := 1
 var _total_people := 0
 var _rescued_people := 0
+var _enemies_queue := []
 
 
 
@@ -53,6 +54,8 @@ func _ready():
 
 	Events.connect("person_finished_movement", self, "_end_person_movement")
 
+	Events.connect("enemy_finished_movement", self, "_end_enemy_turn")
+
 	_tile_tween.connect("tween_all_completed", self, "_end_tile_drop")
 
 	_total_people = _people.get_children().size()
@@ -61,22 +64,23 @@ func _ready():
 func _end_tile_drop():
 	if _state == GameStates.DROPPING_TILE:
 		_dropping_tile.queue_free()
-		_do_enemy_move()
-		_boat_turn()
-		_state = GameStates.AWAITING_INPUT
-		_turn += 1
+		_start_enemy_turn()
+
+
+func _end_enemy_turn():
+	_boat_turn()
+	_state = GameStates.AWAITING_INPUT
+	_turn += 1
 
 
 func _end_person_movement():
 	if _state == GameStates.MOVING_PERSON:
-		print("Hello2")
 		_moves_done += 1
 		_end_player_move()
 
 
 func _on_grid_clicked(pos):
 	if _state == GameStates.AWAITING_INPUT:
-		print("Hello")
 		_do_move(pos)
 
 
@@ -173,12 +177,21 @@ func _drop_tile():
 		_tile_tween.start()
 
 
+func _start_enemy_turn():
+
+	_enemies_queue = _enemies.get_children()
+	_state = GameStates.ENEMIES_TURN
+	_do_enemy_move()
+
+
 func _do_enemy_move():
 
-	for enemy in _enemies.get_children():
+	if _enemies_queue.size() > 0:
+		var enemy = _enemies_queue.pop_back()
 		var enemy_pos = enemy.get_grid_pos()
 		var closest_person = null
 		var closest_distance = 0
+		var move_vec = null
 		var vec = null
 		for person in _people.get_children():
 			var p_person = person.get_grid_pos()
@@ -186,18 +199,23 @@ func _do_enemy_move():
 			var distance = vec.length_squared()
 			if closest_person == null or distance < closest_distance:
 				closest_person = person
+				move_vec = vec
 				closest_distance = distance
 
 		# print("closest person ", closest_person)
 
 		# print(vec)
-		var offset = Vector2(floor(clamp(vec.x, -1, 1)), floor(clamp(vec.y, -1, 1)))
-		var new_pos = enemy_pos + offset
-		var attacking_person = _find_person(new_pos)
-		if attacking_person != null:
-			print("Killing person:" , attacking_person)
-			attacking_person.queue_free()
-		enemy.move_by(offset)
+		if vec != null:
+			var offset = Vector2(floor(clamp(move_vec.x, -1, 1)), floor(clamp(move_vec.y, -1, 1)))
+			var new_pos = enemy_pos + offset
+			var attacking_person = _find_person(new_pos)
+			if attacking_person != null:
+				print("Killing person:" , attacking_person)
+				attacking_person.queue_free()
+			enemy.move_by(offset)
+
+	else:
+		_state = GameStates.BOAT_MOVING
 
 
 func _boat_turn():
