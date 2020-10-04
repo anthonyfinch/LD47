@@ -5,7 +5,7 @@ extends Spatial
 export (NodePath) var tween_path := "Tween"
 onready var _tween := get_node(tween_path)
 
-export (int) var capacity := 2
+export (int) var capacity := 1
 export (int) var move_speed := 3
 
 onready var static1 = get_node("MeshInstance/StaticBody")

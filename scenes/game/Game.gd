@@ -1,6 +1,8 @@
 extends Spatial
 
 
+export (PackedScene) var next_level = null
+export (NodePath) var overlay_path := "Overlay"
 export (NodePath) var camera_path := "Camera"
 export (NodePath) var tile_tween_path := "TileTween"
 export (NodePath) var tile_holder_path := "TileHolder"
@@ -17,6 +19,7 @@ export (int) var lowest_tile_index := 1
 export (int) var medium_tile_index := 2
 export (int) var turns_till_boat := 3
 
+onready var _overlay := get_node(overlay_path)
 onready var _camera := get_node(camera_path)
 onready var _tile_tween := get_node(tile_tween_path)
 onready var _tile_holder := get_node(tile_holder_path)
@@ -42,7 +45,8 @@ enum GameStates {
 	MOVING_PERSON,
 	DROPPING_TILE,
 	ENEMIES_TURN,
-	BOAT_MOVING
+	BOAT_MOVING,
+	LEVEL_OVER
 }
 
 
@@ -56,12 +60,24 @@ func _ready():
 	Events.connect("person_finished_movement", self, "_end_person_movement")
 	Events.connect("enemy_finished_movement", self, "_end_enemy_turn")
 	Events.connect("boat_finished_movement", self, "_end_boat_turn")
+	Events.connect("end_level_button_pressed", self, "_end_level")
 
 	_tile_tween.connect("tween_all_completed", self, "_end_tile_drop")
 
 	_total_people = _people.get_children().size()
 
 	_camera.free_move = true
+
+
+func _end_level():
+	var _total_rescue = _rescued_people
+	for boat in _boats.get_children():
+		_total_rescue += boat.on_board
+
+	if _total_rescue == _total_people:
+		SceneSwitcher.goto_scene(next_level)
+	else:
+		get_tree().reload_current_scene()
 
 
 func _end_tile_drop():
@@ -224,6 +240,7 @@ func _do_enemy_move():
 			if attacking_person != null:
 				print("Killing person:" , attacking_person)
 				attacking_person.queue_free()
+				_check_state()
 			enemy.move_by(offset, 0.5)
 
 	else:
@@ -251,6 +268,7 @@ func _boat_turn():
 			var distance = exit_pos - boat.get_grid_pos().y
 			if distance == 0:
 				print("boat got out")
+				_rescued_people += boat.capacity
 				boat.queue_free()
 			else:
 				print("I'm gonna move")
@@ -295,20 +313,16 @@ func _check_state():
 
 
 	var used = _grid.get_used_cells()
-	# print("used size", used.size())
-	if used.size() == 0:
-		print("all tiles gone")
-		print("rescued ", _total_rescue, " out of ", _total_people)
-
 	var people = _people.get_children()
 	var people_count = 0
 	for person in people:
 		if not person.is_queued_for_deletion():
 			people_count += 1
-	# print("people size", people_count)
-	if people_count == 0:
-		print("all people gone")
+	if people_count == 0 or used.size() == 0:
+		_state = GameStates.LEVEL_OVER
+		_overlay.show(_total_rescue, _total_people)
 		print("rescued ", _total_rescue, " out of ", _total_people)
+
 
 
 func _is_floor_tile(pos):

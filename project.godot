@@ -22,6 +22,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Events="*res://autoloads/Events.gd"
+SceneSwitcher="*res://autoloads/SceneSwitcher.gd"
 
 [rendering]
 
