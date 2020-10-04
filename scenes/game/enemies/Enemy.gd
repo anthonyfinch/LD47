@@ -18,12 +18,12 @@ func get_grid_pos():
 	return Vector2(floor(transform.origin.x), floor(transform.origin.z))
 
 
-func move_by(offset):
+func move_by(offset, delay):
 	# transform.origin.x += offset.x
 	# transform.origin.z += offset.y
 	var from = transform.origin
 	var to = from + Vector3(offset.x, 0, offset.y)
 	_tween.interpolate_property(self, "transform:origin",
 								from, to,
-								1, Tween.TRANS_EXPO, Tween.EASE_OUT)
+								1, Tween.TRANS_EXPO, Tween.EASE_OUT, delay)
 	_tween.start()

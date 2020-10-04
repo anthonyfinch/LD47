@@ -61,6 +61,8 @@ func _ready():
 
 	_total_people = _people.get_children().size()
 
+	_camera.free_move = true
+
 
 func _end_tile_drop():
 	if _state == GameStates.DROPPING_TILE:
@@ -74,6 +76,7 @@ func _end_enemy_turn():
 
 func _end_boat_turn():
 	_state = GameStates.AWAITING_INPUT
+	_camera.free_move = true
 	_turn += 1
 
 
@@ -123,7 +126,6 @@ func _do_move(pos):
 		var clicked = _find_person(pos)
 		if clicked != null and _is_floor_tile(pos):
 			clicked.activate()
-			_camera.move_to(clicked.global_transform.origin, 0.5)
 			_selected_person = clicked
 	else:
 		if _selected_person.can_move_to(pos) and _is_floor_tile(pos) and not pos == _selected_person.get_grid_pos():
@@ -133,8 +135,8 @@ func _do_move(pos):
 
 func _end_player_move():
 	if _moves_done == max_moves:
+		_camera.free_move = false
 		_moves_done = 0
-		_state = GameStates.ENEMIES_TURN
 		_drop_tile()
 	else:
 		_state = GameStates.AWAITING_INPUT
@@ -162,18 +164,22 @@ func _drop_tile():
 
 	if to_delete != null:
 		var tile = _grid.get_cell_item(to_delete.x, to_delete.y, to_delete.z)
+		var magic_origin = to_delete + Vector3(0.4, 0.2, 0.4)  # MAGIC
+		_camera.move_to(magic_origin, 0.5)
+		_camera.shake(0.7, 0.5)
 		if tile == lowest_tile_index:
 			_dropping_tile = lowest_tile.instance()
 		else:
 			_dropping_tile = medium_tile.instance()
 
-		_dropping_tile.transform.origin = to_delete
-		_dropping_tile.transform.origin += Vector3(0.4, 0.2, 0.4)  # MAGIC
+		# _dropping_tile.transform.origin = to_delete
+		# _dropping_tile.transform.origin += Vector3(0.4, 0.2, 0.4)  # MAGIC
+		_dropping_tile.transform.origin = magic_origin
 		_tile_holder.add_child(_dropping_tile)
 		_tile_tween.interpolate_property(_dropping_tile, "transform:origin",
 										 _dropping_tile.transform.origin,
 										 _dropping_tile.transform.origin - Vector3(0, 10, 0),
-										 1, Tween.TRANS_QUINT, Tween.EASE_IN)
+										 1, Tween.TRANS_QUINT, Tween.EASE_IN, 0.5)
 		var person = _find_person(Vector2(to_delete.x, to_delete.z))
 		if person != null:
 			person.queue_free()
@@ -193,6 +199,7 @@ func _do_enemy_move():
 
 	if _enemies_queue.size() > 0:
 		var enemy = _enemies_queue.pop_back()
+		_camera.move_to(enemy.global_transform.origin, 0.5)
 		var enemy_pos = enemy.get_grid_pos()
 		var closest_person = null
 		var closest_distance = 0
@@ -217,7 +224,7 @@ func _do_enemy_move():
 			if attacking_person != null:
 				print("Killing person:" , attacking_person)
 				attacking_person.queue_free()
-			enemy.move_by(offset)
+			enemy.move_by(offset, 0.5)
 
 	else:
 		_boat_turn()
@@ -236,6 +243,7 @@ func _boat_turn():
 		_boats.add_child(new_boat)
 		_end_boat_turn()
 	elif boat != null:
+		_camera.move_to(boat.global_transform.origin, 0.5)
 		if boat.is_full():
 			print("dealing full with boat")
 			# only care about getting back to exit on z axis
@@ -249,7 +257,7 @@ func _boat_turn():
 				var movement = clamp(distance, -1 * boat.move_speed, boat.move_speed)
 				var offset = Vector2(0, movement)
 				print(distance, movement, offset)
-				boat.move_by(offset)
+				boat.move_by(offset, 0.5)
 			_end_boat_turn()
 		else:
 			var nearest_cell = null
@@ -275,7 +283,7 @@ func _boat_turn():
 			var movement_left = boat.move_speed - movement_x
 			var movement_z = clamp(nearest_z, 0, movement_left) # subtract one as we don't want to go onto tile
 			print(nearest_cell, movement_x, movement_left, movement_z)
-			boat.move_by(Vector2(movement_x, movement_z))
+			boat.move_by(Vector2(movement_x, movement_z), 0.5)
 
 
 # Helpers

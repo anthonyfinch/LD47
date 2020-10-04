@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/game/tiles/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scenes/game/MouseDetector.gd" type="Script" id=2]
@@ -31,6 +31,9 @@ metallic = 0.75
 [sub_resource type="QuadMesh" id=4]
 material = SubResource( 3 )
 size = Vector2( 20, 20 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 512, 300 )
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -71,7 +74,10 @@ size = 10.0
 near = 0.01
 far = 8192.0
 script = ExtResource( 4 )
+shake_magnitude = 0.1
 camera_speed = 2.0
+free_move_speed = 2.0
+free_move_margin = 0.2
 
 [node name="MeshInstance" type="MeshInstance" parent="Camera"]
 transform = Transform( 1, 2.08616e-07, -2.98023e-08, 0, 1, 1.49012e-08, 0, -4.47035e-08, 1, 1.43051e-06, -1.19209e-06, -9.12695 )
@@ -80,6 +86,12 @@ mesh = SubResource( 4 )
 material/0 = null
 
 [node name="Tween" type="Tween" parent="Camera"]
+
+[node name="Area2D" type="Area2D" parent="Camera"]
+position = Vector2( 512, 300 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera/Area2D"]
+shape = SubResource( 7 )
 
 [node name="SpotLight" type="SpotLight" parent="."]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, 0, 11.7469, 0 )
