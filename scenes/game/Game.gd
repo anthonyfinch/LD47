@@ -156,8 +156,6 @@ func _on_boat_clicked(boat):
 	if _state == GameStates.AWAITING_INPUT:
 		if _selected_person != null and not boat.is_full():
 			var pos = boat.get_grid_pos()
-			print(pos)
-			print(_selected_person.get_grid_pos())
 			var positions = [
 				Vector2(pos.x, pos.y),
 				Vector2(pos.x, pos.y + 1),
@@ -168,7 +166,6 @@ func _on_boat_clicked(boat):
 				if not already_found:
 					if _selected_person.can_move_to(boat_pos):
 						_set_moves(_moves_done + 1)
-						print("embarking")
 						_selected_person.queue_free()
 						_selected_person = null
 						boat.embark()
@@ -271,15 +268,11 @@ func _do_enemy_move():
 				move_vec = vec
 				closest_distance = distance
 
-		# print("closest person ", closest_person)
-
-		# print(vec)
 		if vec != null:
 			var offset = Vector2(floor(clamp(move_vec.x, -1, 1)), floor(clamp(move_vec.y, -1, 1)))
 			var new_pos = enemy_pos + offset
 			var attacking_person = _find_person(new_pos)
 			if attacking_person != null:
-				print("Killing person:" , attacking_person)
 				attacking_person.queue_free()
 				_check_state()
 			enemy.move_by(offset, 0.5)
@@ -295,27 +288,22 @@ func _boat_turn():
 		boat = _boats.get_children()[0]
 
 	if fmod(_turn, turns_till_boat) == 0 and boat == null:
-		print("spawning boat")
 		var new_boat = boat_scene.instance()
 		new_boat.transform.origin = _boat_point.transform.origin
 		_boats.add_child(new_boat)
 		_end_boat_turn()
 	elif boat != null:
-		_camera.move_to(boat.global_transform.origin, 0.5)
+		# _camera.move_to(boat.global_transform.origin, 0.5)
 		if boat.is_full():
-			print("dealing full with boat")
 			# only care about getting back to exit on z axis
 			var exit_pos = floor(_boat_point.transform.origin.z)
 			var distance = exit_pos - boat.get_grid_pos().y
 			if distance == 0:
-				print("boat got out")
 				_set_rescue_total(_rescued_people + boat.capacity)
 				boat.queue_free()
 			else:
-				print("I'm gonna move")
 				var movement = clamp(distance, -1 * boat.move_speed, boat.move_speed)
 				var offset = Vector2(0, movement)
-				print(distance, movement, offset)
 				boat.move_by(offset, 0.5)
 			_end_boat_turn()
 		else:
@@ -341,7 +329,6 @@ func _boat_turn():
 			var movement_x = clamp(nearest_x, 0, boat.move_speed)
 			var movement_left = boat.move_speed - movement_x
 			var movement_z = clamp(nearest_z, 0, movement_left) # subtract one as we don't want to go onto tile
-			print(nearest_cell, movement_x, movement_left, movement_z)
 			boat.move_by(Vector2(movement_x, movement_z), 0.5)
 
 
@@ -362,7 +349,6 @@ func _check_state():
 	if people_count == 0 or used.size() == 0:
 		_set_state(GameStates.LEVEL_OVER)
 		_overlay.show(_total_rescue, _total_people)
-		print("rescued ", _total_rescue, " out of ", _total_people)
 
 
 

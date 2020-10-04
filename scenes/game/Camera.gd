@@ -43,7 +43,6 @@ func _process(delta):
 		var w_size = OS.get_window_size()
 		var norm_pos = mouse_pos / w_size
 		var offset = Vector2(0, 0)
-		# print(norm pos)
 
 		if norm_pos.x <= free_move_margin:
 			offset.x = -1
