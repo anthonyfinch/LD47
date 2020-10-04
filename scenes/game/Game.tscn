@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://scenes/game/tiles/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scenes/game/MouseDetector.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://scenes/game/boat/Boat.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/Oxanium-Medium.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://scenes/game/Overlay.gd" type="Script" id=9]
+[ext_resource path="res://scenes/game/UI.gd" type="Script" id=10]
 
 [sub_resource type="ProceduralSky" id=1]
 
@@ -259,7 +260,7 @@ script = ExtResource( 4 )
 shake_magnitude = 0.1
 camera_speed = 2.0
 free_move_speed = 2.0
-free_move_margin = 0.2
+free_move_margin = 0.01
 
 [node name="MeshInstance" type="MeshInstance" parent="Camera"]
 transform = Transform( 1, 2.08616e-07, -2.98023e-08, 0, 1, 1.49012e-08, 0, -4.47035e-08, 1, 1.43051e-06, -1.19209e-06, -9.12695 )
@@ -270,6 +271,7 @@ material/0 = null
 [node name="Tween" type="Tween" parent="Camera"]
 
 [node name="Area2D" type="Area2D" parent="Camera"]
+visible = false
 position = Vector2( 512, 300 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Camera/Area2D"]
@@ -366,17 +368,14 @@ __meta__ = {
 }
 
 [node name="UI" type="Node2D" parent="."]
-visible = false
+script = ExtResource( 10 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
-follow_viewport_enable = true
-
-[node name="Status" type="Label" parent="UI/CanvasLayer"]
+[node name="Status" type="Label" parent="UI"]
 modulate = Color( 1, 1, 1, 0.745098 )
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -170.0
-margin_right = 4.99695
+margin_left = 854.0
+margin_right = 1029.0
 margin_bottom = 69.0
 theme = SubResource( 17 )
 custom_fonts/font = SubResource( 18 )
@@ -385,13 +384,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Rescue Count" type="Label" parent="UI/CanvasLayer"]
+[node name="RescueCount" type="Label" parent="UI"]
 modulate = Color( 1, 1, 1, 0.745098 )
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -1022.87
+margin_left = 1.12524
 margin_top = 3.16994
-margin_right = -847.875
+margin_right = 176.125
 margin_bottom = 72.1699
 theme = SubResource( 20 )
 custom_fonts/font = SubResource( 18 )
@@ -399,24 +398,3 @@ text = "x / x Rescued"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="ViewportContainer" type="ViewportContainer" parent="UI/CanvasLayer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 168.0
-margin_top = 58.0
-margin_right = 168.0
-margin_bottom = 58.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Viewport" type="Viewport" parent="UI/CanvasLayer/ViewportContainer"]
-size = Vector2( 1024, 600 )
-handle_input_locally = false
-usage = 0
-render_target_update_mode = 0

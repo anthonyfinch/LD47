@@ -26,6 +26,7 @@ SceneSwitcher="*res://autoloads/SceneSwitcher.gd"
 
 [display]
 
+window/size/resizable=false
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 

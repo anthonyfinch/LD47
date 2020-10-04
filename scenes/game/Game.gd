@@ -64,9 +64,50 @@ func _ready():
 
 	_tile_tween.connect("tween_all_completed", self, "_end_tile_drop")
 
-	_total_people = _people.get_children().size()
+	_set_rescue_total(0)
+	_set_people_total(_people.get_children().size())
+	_set_state(GameStates.AWAITING_INPUT)
 
 	_camera.free_move = true
+
+
+func _set_state(state):
+	_state = state
+	_signal_state_change()
+
+
+func _set_moves(moves):
+	_moves_done = moves
+	_signal_state_change()
+
+
+func _set_rescue_total(count):
+	_rescued_people = count
+	Events.emit_signal("rescue_total_set", _rescued_people)
+
+
+func _set_people_total(count):
+	_total_people = count
+	Events.emit_signal("people_total_set", _total_people)
+
+
+func _signal_state_change():
+	var msg = ""
+	match _state:
+		GameStates.AWAITING_INPUT:
+			msg = "Player Turn\n %s Moves Remaining" % (max_moves - _moves_done)
+		GameStates.MOVING_PERSON:
+			msg = "Player Turn\n %s Moves Remaining" % (max_moves - _moves_done)
+		GameStates.DROPPING_TILE:
+			msg = "Landscape Turn"
+		GameStates.ENEMIES_TURN:
+			msg = "Enemies Turn"
+		GameStates.BOAT_MOVING:
+			msg = "Ship Turn"
+		GameStates.LEVEL_OVER:
+			msg = "Level Over"
+
+	Events.emit_signal("state_set", msg)
 
 
 func _end_level():
@@ -98,7 +139,7 @@ func _end_boat_turn():
 
 func _end_person_movement():
 	if _state == GameStates.MOVING_PERSON:
-		_moves_done += 1
+		_set_moves(_moves_done + 1)
 		_end_player_move()
 
 
@@ -126,7 +167,7 @@ func _on_boat_clicked(boat):
 			for boat_pos in positions:
 				if not already_found:
 					if _selected_person.can_move_to(boat_pos):
-						_moves_done += 1
+						_set_moves(_moves_done + 1)
 						print("embarking")
 						_selected_person.queue_free()
 						_selected_person = null
@@ -145,17 +186,17 @@ func _do_move(pos):
 			_selected_person = clicked
 	else:
 		if _selected_person.can_move_to(pos) and _is_floor_tile(pos) and not pos == _selected_person.get_grid_pos():
-				_state = GameStates.MOVING_PERSON
+				_set_state(GameStates.MOVING_PERSON)
 				_selected_person.move_to(pos)
 				_selected_person = null
 
 func _end_player_move():
 	if _moves_done == max_moves:
 		_camera.free_move = false
-		_moves_done = 0
+		_set_moves(0)
 		_drop_tile()
 	else:
-		_state = GameStates.AWAITING_INPUT
+		_set_state(GameStates.AWAITING_INPUT)
 
 	_check_state()
 
@@ -200,14 +241,14 @@ func _drop_tile():
 		if person != null:
 			person.queue_free()
 		_grid.set_cell_item(to_delete.x, to_delete.y, to_delete.z, GridMap.INVALID_CELL_ITEM)
-		_state = GameStates.DROPPING_TILE
+		_set_state(GameStates.DROPPING_TILE)
 		_tile_tween.start()
 
 
 func _start_enemy_turn():
 
 	_enemies_queue = _enemies.get_children()
-	_state = GameStates.ENEMIES_TURN
+	_set_state(GameStates.ENEMIES_TURN)
 	_do_enemy_move()
 
 
@@ -248,7 +289,7 @@ func _do_enemy_move():
 
 
 func _boat_turn():
-	_state = GameStates.BOAT_MOVING
+	_set_state(GameStates.BOAT_MOVING)
 	var boat = null
 	if _boats.get_children().size() > 0:
 		boat = _boats.get_children()[0]
@@ -268,7 +309,7 @@ func _boat_turn():
 			var distance = exit_pos - boat.get_grid_pos().y
 			if distance == 0:
 				print("boat got out")
-				_rescued_people += boat.capacity
+				_set_rescue_total(_rescued_people + boat.capacity)
 				boat.queue_free()
 			else:
 				print("I'm gonna move")
@@ -319,7 +360,7 @@ func _check_state():
 		if not person.is_queued_for_deletion():
 			people_count += 1
 	if people_count == 0 or used.size() == 0:
-		_state = GameStates.LEVEL_OVER
+		_set_state(GameStates.LEVEL_OVER)
 		_overlay.show(_total_rescue, _total_people)
 		print("rescued ", _total_rescue, " out of ", _total_people)
 
