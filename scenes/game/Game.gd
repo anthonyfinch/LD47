@@ -189,7 +189,7 @@ func _boat_turn():
 			var nearest_x = 0
 			var nearest_z = 0
 			var current_pos = boat.get_grid_pos()
-			current_pos.y += 5 # looking ahead of boat
+			current_pos.y += 3 # looking ahead of boat
 			var used_cells = _grid.get_used_cells()
 			if used_cells.size() > 0:
 				nearest_cell = used_cells[0]
@@ -204,10 +204,11 @@ func _boat_turn():
 						nearest_x = x_diff
 						nearest_z = z_diff
 
-				var movement_x = clamp(nearest_x, 0, boat.move_speed)
-				var movement_left = boat.move_speed - movement_x
-				var movement_z = clamp(nearest_z, 0, movement_left) # subtract one as we don't want to go onto tile
-				boat.move_by(Vector2(movement_x, movement_z))
+			var movement_x = clamp(nearest_x, 0, boat.move_speed)
+			var movement_left = boat.move_speed - movement_x
+			var movement_z = clamp(nearest_z, 0, movement_left) # subtract one as we don't want to go onto tile
+			print(nearest_cell, movement_x, movement_left, movement_z)
+			boat.move_by(Vector2(movement_x, movement_z))
 
 
 # Helpers
@@ -219,7 +220,7 @@ func _check_state():
 
 
 	var used = _grid.get_used_cells()
-	print("used size", used.size())
+	# print("used size", used.size())
 	if used.size() == 0:
 		print("all tiles gone")
 		print("rescued ", _total_rescue, " out of ", _total_people)
@@ -229,7 +230,7 @@ func _check_state():
 	for person in people:
 		if not person.is_queued_for_deletion():
 			people_count += 1
-	print("people size", people_count)
+	# print("people size", people_count)
 	if people_count == 0:
 		print("all people gone")
 		print("rescued ", _total_rescue, " out of ", _total_people)
