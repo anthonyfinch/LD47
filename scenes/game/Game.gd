@@ -19,7 +19,7 @@ onready var _boats := get_node(boats_path)
 onready var _boat_point := get_node(boat_point_path)
 
 var _selected_person: Spatial = null
-var _state = GameStates.AWAITING_PLAYER
+var _state = GameStates.AWAITING_INPUT
 var _moves_done := 0
 var _turn := 1
 var _total_people := 0
@@ -28,8 +28,11 @@ var _rescued_people := 0
 
 
 enum GameStates {
-	AWAITING_PLAYER,
-	ENEMY_TURN
+	AWAITING_INPUT,
+	MOVING_PERSON,
+	DROPPING_TILE,
+	ENEMIES_TURN,
+	BOAT_MOVING
 }
 
 
@@ -40,11 +43,21 @@ func _ready():
 	Events.connect("grid_position", self, "_on_grid_position")
 	Events.connect("boat_clicked", self, "_on_boat_clicked")
 
+	Events.connect("person_finished_movement", self, "_end_person_movement")
+
 	_total_people = _people.get_children().size()
 
 
+func _end_person_movement():
+	if _state == GameStates.MOVING_PERSON:
+		print("Hello2")
+		_moves_done += 1
+		_end_player_move()
+
+
 func _on_grid_clicked(pos):
-	if _state == GameStates.AWAITING_PLAYER:
+	if _state == GameStates.AWAITING_INPUT:
+		print("Hello")
 		_do_move(pos)
 
 
@@ -53,7 +66,7 @@ func _on_grid_position(pos):
 
 
 func _on_boat_clicked(boat):
-	if _state == GameStates.AWAITING_PLAYER:
+	if _state == GameStates.AWAITING_INPUT:
 		if _selected_person != null and not boat.is_full():
 			var pos = boat.get_grid_pos()
 			print(pos)
@@ -82,27 +95,25 @@ func _do_move(pos):
 	if _selected_person == null:
 		var clicked = _find_person(pos)
 		if clicked != null and _is_floor_tile(pos):
-			# print("selected person: ", clicked)
+			clicked.activate()
 			_selected_person = clicked
 	else:
-		# print("moving")
-		if _selected_person.can_move_to(pos):
-			if _is_floor_tile(pos):
+		if _selected_person.can_move_to(pos) and _is_floor_tile(pos) and not pos == _selected_person.get_grid_pos():
+				_state = GameStates.MOVING_PERSON
 				_selected_person.move_to(pos)
 				_selected_person = null
-				_moves_done += 1
-				_end_player_move()
-
 
 func _end_player_move():
 	if _moves_done == max_moves:
 		_moves_done = 0
-		_state = GameStates.ENEMY_TURN
+		_state = GameStates.ENEMIES_TURN
 		_drop_tile()
 		_do_enemy_move()
 		_boat_turn()
-		_state = GameStates.AWAITING_PLAYER
+		_state = GameStates.AWAITING_INPUT
 		_turn += 1
+	else:
+		_state = GameStates.AWAITING_INPUT
 
 	_check_state()
 
