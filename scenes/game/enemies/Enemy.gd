@@ -25,5 +25,5 @@ func move_by(offset):
 	var to = from + Vector3(offset.x, 0, offset.y)
 	_tween.interpolate_property(self, "transform:origin",
 								from, to,
-								1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+								1, Tween.TRANS_EXPO, Tween.EASE_OUT)
 	_tween.start()

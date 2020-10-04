@@ -47,14 +47,13 @@ enum GameStates {
 # Handlers
 
 func _ready():
-	print(_grid.get_meshes())
 	Events.connect("grid_clicked", self, "_on_grid_clicked")
 	Events.connect("grid_position", self, "_on_grid_position")
 	Events.connect("boat_clicked", self, "_on_boat_clicked")
 
 	Events.connect("person_finished_movement", self, "_end_person_movement")
-
 	Events.connect("enemy_finished_movement", self, "_end_enemy_turn")
+	Events.connect("boat_finished_movement", self, "_end_boat_turn")
 
 	_tile_tween.connect("tween_all_completed", self, "_end_tile_drop")
 
@@ -68,7 +67,10 @@ func _end_tile_drop():
 
 
 func _end_enemy_turn():
-	_boat_turn()
+	_do_enemy_move()
+
+
+func _end_boat_turn():
 	_state = GameStates.AWAITING_INPUT
 	_turn += 1
 
@@ -215,10 +217,11 @@ func _do_enemy_move():
 			enemy.move_by(offset)
 
 	else:
-		_state = GameStates.BOAT_MOVING
+		_boat_turn()
 
 
 func _boat_turn():
+	_state = GameStates.BOAT_MOVING
 	var boat = null
 	if _boats.get_children().size() > 0:
 		boat = _boats.get_children()[0]
@@ -228,6 +231,7 @@ func _boat_turn():
 		var new_boat = boat_scene.instance()
 		new_boat.transform.origin = _boat_point.transform.origin
 		_boats.add_child(new_boat)
+		_end_boat_turn()
 	elif boat != null:
 		if boat.is_full():
 			print("dealing full with boat")
@@ -243,6 +247,7 @@ func _boat_turn():
 				var offset = Vector2(0, movement)
 				print(distance, movement, offset)
 				boat.move_by(offset)
+			_end_boat_turn()
 		else:
 			var nearest_cell = null
 			var nearest_x = 0

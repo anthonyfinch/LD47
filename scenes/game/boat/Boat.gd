@@ -1,6 +1,10 @@
 extends Spatial
 
 
+
+export (NodePath) var tween_path := "Tween"
+onready var _tween := get_node(tween_path)
+
 export (int) var capacity := 2
 export (int) var move_speed := 3
 
@@ -11,8 +15,14 @@ var on_board := 0
 
 
 func _ready():
+	_tween.connect("tween_all_completed", self, "_movement_complete")
 	static1.connect("input_event", self, "_on_input_event")
 	static2.connect("input_event", self, "_on_input_event")
+
+
+func _movement_complete():
+	# _anim.stop()
+	Events.emit_signal("boat_finished_movement")
 
 
 func _on_input_event(camera, event, click_pos, click_normal, shape_idx):
@@ -26,8 +36,12 @@ func get_grid_pos():
 
 
 func move_by(offset):
-	transform.origin.x += offset.x
-	transform.origin.z += offset.y
+	var from = transform.origin
+	var to = from + Vector3(offset.x, 0, offset.y)
+	_tween.interpolate_property(self, "transform:origin",
+								from, to,
+								1, Tween.TRANS_QUART, Tween.EASE_IN_OUT)
+	_tween.start()
 
 
 func is_full():
