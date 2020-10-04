@@ -1,6 +1,7 @@
 extends Spatial
 
 
+export (NodePath) var camera_path := "Camera"
 export (NodePath) var tile_tween_path := "TileTween"
 export (NodePath) var tile_holder_path := "TileHolder"
 export (NodePath) var people_path := "People"
@@ -16,6 +17,7 @@ export (int) var lowest_tile_index := 1
 export (int) var medium_tile_index := 2
 export (int) var turns_till_boat := 3
 
+onready var _camera := get_node(camera_path)
 onready var _tile_tween := get_node(tile_tween_path)
 onready var _tile_holder := get_node(tile_holder_path)
 onready var _people := get_node(people_path)
@@ -121,6 +123,7 @@ func _do_move(pos):
 		var clicked = _find_person(pos)
 		if clicked != null and _is_floor_tile(pos):
 			clicked.activate()
+			_camera.move_to(clicked.global_transform.origin, 0.5)
 			_selected_person = clicked
 	else:
 		if _selected_person.can_move_to(pos) and _is_floor_tile(pos) and not pos == _selected_person.get_grid_pos():
