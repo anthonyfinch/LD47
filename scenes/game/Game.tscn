@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scenes/game/tiles/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scenes/game/MouseDetector.gd" type="Script" id=2]
+[ext_resource path="res://scenes/game/tiles/Tile1.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/game/Camera.gd" type="Script" id=4]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=5]
+[ext_resource path="res://scenes/game/tiles/Tile2.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/game/boat/Boat.tscn" type="PackedScene" id=7]
 
 [sub_resource type="ProceduralSky" id=1]
@@ -38,7 +40,11 @@ extents = Vector3( 10, 0.2, 11 )
 [node name="Game" type="Spatial"]
 script = ExtResource( 5 )
 boat_scene = ExtResource( 7 )
+lowest_tile = ExtResource( 3 )
+medium_tile = ExtResource( 6 )
 turns_till_boat = 1
+
+[node name="TileHolder" type="Spatial" parent="."]
 
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
@@ -106,3 +112,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0 )
 
 [node name="BoatPoint" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -9.5 )
+
+[node name="TileTween" type="Tween" parent="."]

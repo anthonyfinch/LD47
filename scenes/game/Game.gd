@@ -1,23 +1,30 @@
 extends Spatial
 
 
+export (NodePath) var tile_tween_path := "TileTween"
+export (NodePath) var tile_holder_path := "TileHolder"
 export (NodePath) var people_path := "People"
 export (NodePath) var enemies_path := "Enemies"
 export (NodePath) var boats_path := "Boats"
 export (NodePath) var boat_point_path := "BoatPoint"
 export (NodePath) var grid_path := "GridMap"
 export (PackedScene) var boat_scene = null
+export (PackedScene) var lowest_tile = null
+export (PackedScene) var medium_tile = null
 export (int) var max_moves := 3
 export (int) var lowest_tile_index := 1
 export (int) var medium_tile_index := 2
 export (int) var turns_till_boat := 3
 
+onready var _tile_tween := get_node(tile_tween_path)
+onready var _tile_holder := get_node(tile_holder_path)
 onready var _people := get_node(people_path)
 onready var _enemies := get_node(enemies_path)
 onready var _grid := get_node(grid_path)
 onready var _boats := get_node(boats_path)
 onready var _boat_point := get_node(boat_point_path)
 
+var _dropping_tile: MeshInstance = null
 var _selected_person: Spatial = null
 var _state = GameStates.AWAITING_INPUT
 var _moves_done := 0
@@ -39,13 +46,25 @@ enum GameStates {
 # Handlers
 
 func _ready():
+	print(_grid.get_meshes())
 	Events.connect("grid_clicked", self, "_on_grid_clicked")
 	Events.connect("grid_position", self, "_on_grid_position")
 	Events.connect("boat_clicked", self, "_on_boat_clicked")
 
 	Events.connect("person_finished_movement", self, "_end_person_movement")
 
+	_tile_tween.connect("tween_all_completed", self, "_end_tile_drop")
+
 	_total_people = _people.get_children().size()
+
+
+func _end_tile_drop():
+	if _state == GameStates.DROPPING_TILE:
+		_dropping_tile.queue_free()
+		_do_enemy_move()
+		_boat_turn()
+		_state = GameStates.AWAITING_INPUT
+		_turn += 1
 
 
 func _end_person_movement():
@@ -108,10 +127,6 @@ func _end_player_move():
 		_moves_done = 0
 		_state = GameStates.ENEMIES_TURN
 		_drop_tile()
-		_do_enemy_move()
-		_boat_turn()
-		_state = GameStates.AWAITING_INPUT
-		_turn += 1
 	else:
 		_state = GameStates.AWAITING_INPUT
 
@@ -137,10 +152,25 @@ func _drop_tile():
 		to_delete = medium[randi() % medium.size()]
 
 	if to_delete != null:
+		var tile = _grid.get_cell_item(to_delete.x, to_delete.y, to_delete.z)
+		if tile == lowest_tile_index:
+			_dropping_tile = lowest_tile.instance()
+		else:
+			_dropping_tile = medium_tile.instance()
+
+		_dropping_tile.transform.origin = to_delete
+		_dropping_tile.transform.origin += Vector3(0.4, 0.2, 0.4)  # MAGIC
+		_tile_holder.add_child(_dropping_tile)
+		_tile_tween.interpolate_property(_dropping_tile, "transform:origin",
+										 _dropping_tile.transform.origin,
+										 _dropping_tile.transform.origin - Vector3(0, 10, 0),
+										 1, Tween.TRANS_QUINT, Tween.EASE_IN)
 		var person = _find_person(Vector2(to_delete.x, to_delete.z))
 		if person != null:
 			person.queue_free()
 		_grid.set_cell_item(to_delete.x, to_delete.y, to_delete.z, GridMap.INVALID_CELL_ITEM)
+		_state = GameStates.DROPPING_TILE
+		_tile_tween.start()
 
 
 func _do_enemy_move():
