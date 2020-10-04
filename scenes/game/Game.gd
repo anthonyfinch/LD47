@@ -95,9 +95,9 @@ func _signal_state_change():
 	var msg = ""
 	match _state:
 		GameStates.AWAITING_INPUT:
-			msg = "Player Turn\n %s Moves Remaining" % (max_moves - _moves_done)
+			msg = "Player Turn\n%s Moves Remaining" % (max_moves - _moves_done)
 		GameStates.MOVING_PERSON:
-			msg = "Player Turn\n %s Moves Remaining" % (max_moves - _moves_done)
+			msg = "Player Turn\n%s Moves Remaining" % (max_moves - _moves_done)
 		GameStates.DROPPING_TILE:
 			msg = "Landscape Turn"
 		GameStates.ENEMIES_TURN:

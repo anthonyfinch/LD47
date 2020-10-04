@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://scenes/game/tiles/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scenes/game/MouseDetector.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://ui/Oxanium-Medium.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://scenes/game/Overlay.gd" type="Script" id=9]
 [ext_resource path="res://scenes/game/UI.gd" type="Script" id=10]
+[ext_resource path="res://ui/Button.tres" type="Theme" id=11]
 
 [sub_resource type="ProceduralSky" id=1]
 
@@ -103,79 +104,7 @@ tracks/4/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="DynamicFont" id=10]
-size = 32
-font_data = ExtResource( 8 )
-
-[sub_resource type="StyleBoxFlat" id=11]
-bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.12549, 0.12549, 0.12549, 1 )
-expand_margin_left = 5.0
-expand_margin_right = 5.0
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-shadow_color = Color( 0, 0, 0, 0.34902 )
-shadow_offset = Vector2( 1, 1 )
-
-[sub_resource type="StyleBoxFlat" id=12]
-bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.12549, 0.12549, 0.12549, 1 )
-expand_margin_left = 5.0
-expand_margin_right = 5.0
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-shadow_offset = Vector2( 2, 2 )
-
-[sub_resource type="StyleBoxFlat" id=13]
-bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.12549, 0.12549, 0.12549, 1 )
-expand_margin_left = 5.0
-expand_margin_right = 5.0
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-shadow_color = Color( 0, 0, 0, 0.34902 )
-shadow_size = 1
-shadow_offset = Vector2( 1, 1 )
-
-[sub_resource type="StyleBoxFlat" id=14]
-bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.12549, 0.12549, 0.12549, 1 )
-expand_margin_left = 5.0
-expand_margin_right = 5.0
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-shadow_offset = Vector2( 2, 2 )
-
-[sub_resource type="Theme" id=15]
-Button/colors/font_color = Color( 1, 1, 1, 1 )
-Button/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
-Button/colors/font_color_hover = Color( 1, 1, 1, 1 )
-Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
-Button/constants/hseparation = 2
-Button/fonts/font = SubResource( 10 )
-Button/styles/disabled = null
-Button/styles/focus = SubResource( 11 )
-Button/styles/hover = SubResource( 12 )
-Button/styles/normal = SubResource( 13 )
-Button/styles/pressed = SubResource( 14 )
-
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=10]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 8
 border_width_bottom = 8
@@ -186,7 +115,7 @@ expand_margin_right = 5.0
 expand_margin_top = 5.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="Theme" id=17]
+[sub_resource type="Theme" id=11]
 Label/colors/font_color = Color( 1, 1, 1, 1 )
 Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
 Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
@@ -195,13 +124,13 @@ Label/constants/shadow_as_outline = 0
 Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/fonts/font = null
-Label/styles/normal = SubResource( 16 )
+Label/styles/normal = SubResource( 10 )
 
-[sub_resource type="DynamicFont" id=18]
+[sub_resource type="DynamicFont" id=12]
 size = 24
 font_data = ExtResource( 8 )
 
-[sub_resource type="StyleBoxFlat" id=19]
+[sub_resource type="StyleBoxFlat" id=13]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_right = 8
 border_width_bottom = 8
@@ -212,7 +141,7 @@ expand_margin_right = 5.0
 expand_margin_top = 5.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="Theme" id=20]
+[sub_resource type="Theme" id=14]
 Label/colors/font_color = Color( 1, 1, 1, 1 )
 Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
 Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
@@ -221,7 +150,7 @@ Label/constants/shadow_as_outline = 0
 Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/fonts/font = null
-Label/styles/normal = SubResource( 19 )
+Label/styles/normal = SubResource( 13 )
 
 [node name="Game" type="Spatial"]
 script = ExtResource( 5 )
@@ -361,7 +290,7 @@ margin_left = 469.5
 margin_top = 333.559
 margin_right = 554.5
 margin_bottom = 370.559
-theme = SubResource( 15 )
+theme = ExtResource( 11 )
 text = "Retry"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -378,8 +307,8 @@ margin_left = 770.33
 margin_top = 4.62492
 margin_right = 1019.33
 margin_bottom = 73.6249
-theme = SubResource( 17 )
-custom_fonts/font = SubResource( 18 )
+theme = SubResource( 11 )
+custom_fonts/font = SubResource( 12 )
 text = "Boat Turn"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -393,8 +322,8 @@ margin_left = 5.09375
 margin_top = 4.75733
 margin_right = 180.094
 margin_bottom = 73.7573
-theme = SubResource( 20 )
-custom_fonts/font = SubResource( 18 )
+theme = SubResource( 14 )
+custom_fonts/font = SubResource( 12 )
 text = "x / x Rescued"
 __meta__ = {
 "_edit_use_anchors_": false
