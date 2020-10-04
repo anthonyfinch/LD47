@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://scenes/game/tiles/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scenes/game/MouseDetector.gd" type="Script" id=2]
@@ -34,12 +34,12 @@ metallic = 0.75
 material = SubResource( 3 )
 size = Vector2( 20, 20 )
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 512, 300 )
 
-[sub_resource type="PhysicsMaterial" id=5]
+[sub_resource type="PhysicsMaterial" id=6]
 
-[sub_resource type="BoxShape" id=6]
+[sub_resource type="BoxShape" id=7]
 extents = Vector3( 10, 0.2, 11 )
 
 [sub_resource type="DynamicFont" id=8]
@@ -106,7 +106,7 @@ tracks/4/keys = {
 size = 32
 font_data = ExtResource( 8 )
 
-[sub_resource type="StyleBoxFlat" id=17]
+[sub_resource type="StyleBoxFlat" id=11]
 bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
 border_width_left = 2
 border_width_top = 2
@@ -120,7 +120,7 @@ expand_margin_bottom = 5.0
 shadow_color = Color( 0, 0, 0, 0.34902 )
 shadow_offset = Vector2( 1, 1 )
 
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=12]
 bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
 border_width_left = 2
 border_width_top = 2
@@ -148,7 +148,7 @@ shadow_color = Color( 0, 0, 0, 0.34902 )
 shadow_size = 1
 shadow_offset = Vector2( 1, 1 )
 
-[sub_resource type="StyleBoxFlat" id=18]
+[sub_resource type="StyleBoxFlat" id=14]
 bg_color = Color( 0.807843, 0.807843, 0.807843, 1 )
 border_width_left = 2
 border_width_top = 2
@@ -161,7 +161,7 @@ expand_margin_top = 5.0
 expand_margin_bottom = 5.0
 shadow_offset = Vector2( 2, 2 )
 
-[sub_resource type="Theme" id=11]
+[sub_resource type="Theme" id=15]
 Button/colors/font_color = Color( 1, 1, 1, 1 )
 Button/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
 Button/colors/font_color_hover = Color( 1, 1, 1, 1 )
@@ -169,10 +169,58 @@ Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
 Button/constants/hseparation = 2
 Button/fonts/font = SubResource( 10 )
 Button/styles/disabled = null
-Button/styles/focus = SubResource( 17 )
-Button/styles/hover = SubResource( 16 )
+Button/styles/focus = SubResource( 11 )
+Button/styles/hover = SubResource( 12 )
 Button/styles/normal = SubResource( 13 )
-Button/styles/pressed = SubResource( 18 )
+Button/styles/pressed = SubResource( 14 )
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 8
+border_width_bottom = 8
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_bottom_left = 10
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+expand_margin_top = 5.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="Theme" id=17]
+Label/colors/font_color = Color( 1, 1, 1, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = null
+Label/styles/normal = SubResource( 16 )
+
+[sub_resource type="DynamicFont" id=18]
+size = 24
+font_data = ExtResource( 8 )
+
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_bottom_right = 10
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+expand_margin_top = 5.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="Theme" id=20]
+Label/colors/font_color = Color( 1, 1, 1, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = null
+Label/styles/normal = SubResource( 19 )
 
 [node name="Game" type="Spatial"]
 script = ExtResource( 5 )
@@ -225,7 +273,7 @@ material/0 = null
 position = Vector2( 512, 300 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Camera/Area2D"]
-shape = SubResource( 7 )
+shape = SubResource( 5 )
 
 [node name="SpotLight" type="SpotLight" parent="."]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, 0, 11.7469, 0 )
@@ -243,11 +291,11 @@ omni_range = 12.474
 
 [node name="MouseDetector" type="StaticBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.231, 0, 3.642 )
-physics_material_override = SubResource( 5 )
+physics_material_override = SubResource( 6 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="MouseDetector"]
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 
 [node name="People" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0 )
@@ -311,8 +359,64 @@ margin_left = 469.5
 margin_top = 333.559
 margin_right = 554.5
 margin_bottom = 370.559
-theme = SubResource( 11 )
+theme = SubResource( 15 )
 text = "Retry"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="UI" type="Node2D" parent="."]
+visible = false
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
+follow_viewport_enable = true
+
+[node name="Status" type="Label" parent="UI/CanvasLayer"]
+modulate = Color( 1, 1, 1, 0.745098 )
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -170.0
+margin_right = 4.99695
+margin_bottom = 69.0
+theme = SubResource( 17 )
+custom_fonts/font = SubResource( 18 )
+text = "Boat Turn"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rescue Count" type="Label" parent="UI/CanvasLayer"]
+modulate = Color( 1, 1, 1, 0.745098 )
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -1022.87
+margin_top = 3.16994
+margin_right = -847.875
+margin_bottom = 72.1699
+theme = SubResource( 20 )
+custom_fonts/font = SubResource( 18 )
+text = "x / x Rescued"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ViewportContainer" type="ViewportContainer" parent="UI/CanvasLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 168.0
+margin_top = 58.0
+margin_right = 168.0
+margin_bottom = 58.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="UI/CanvasLayer/ViewportContainer"]
+size = Vector2( 1024, 600 )
+handle_input_locally = false
+usage = 0
+render_target_update_mode = 0

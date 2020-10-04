@@ -24,6 +24,11 @@ config/icon="res://icon.png"
 Events="*res://autoloads/Events.gd"
 SceneSwitcher="*res://autoloads/SceneSwitcher.gd"
 
+[display]
+
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
